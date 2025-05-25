@@ -49,9 +49,8 @@ jobs:
           EOF
 
           while IFS='|' read -r name color desc; do
-            if ! gh label view "$name" &>/dev/null; then
-              gh label create "$name" --color "$color" --description "$desc"
-            else
-              gh label edit   "$name" --color "$color" --description "$desc"
-            fi
+            gh label create "$name" \
+              --color "$color" \
+              --description "$desc" \
+              --force
           done < labels.txt
