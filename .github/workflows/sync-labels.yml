@@ -17,44 +17,41 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Sincronizar etiquetas con gh CLI
-        shell: bash
         run: |
-          # Construimos un bloque con todas las etiquetas
-          labels=$(cat << 'LABELS'
-Priority: Critical|B60205|Critical, needs to check quickly
-Priority: High|D93F0B|Priority level high
-Priority: Medium|FBCA04|Priority level medium
-Priority: Low|0E8A16|Priority level low
-Status: Complete|0E8A16|Task, feature, implemented without problems
-Status: Debugging|5319E7|Code debugging and searching errors on it
-Status: Feedback Needed|0094BC|Feedback priority in some task, features, code…
-Status: Generate Conflicts|A30200|Feature that generates conflicts on code deployment
-Status: In Observation|00CCCC|Code implemented and feature is under observation in case generates conflicts
-Status: In Progress|D93F0B|Still in progress or developing or checking functionality
-Status: On Discussion|0052CC|Feature or new function to implement, that need a little discussion over it
-Status: On Hold|000000|Task, feature is hold due to time or no people working there right now
-Status: Ready for Merge|0E8A16|Feature ready for merge and see functionality and how works
-Status: Ready for Test|0E8A16|Feature confirmed and already finished, need some test before deploy on main branch
-Status: Review Needed|FBCA04|Feature, task or code needs review for check the functionality
-Status: Stopped|000000|Currently functionality stopped
-Status: Under Consideration|5319E7|Developers thinking about the implementation of the feature, suggestion…
-Type: Bug|D93F0B|Bug exists on code development, needs to check, review for fast push
-Type: Documentation|0075CA|For code documentation issues or recomendation
-Type: Enhancement|0052CC|Enhancement for application that need to be review
-Type: Feature|0E8A16|New feature to implement, need review
-Type: Help Needed|5319E7|Attention is needed
-Type: Idea|FBCA04|Idea, or suggestion for change some functionality on application
-Type: Question|D93F0B|Question, for explain what exactly want to implement
-Type: Refactoring|0052CC|Improvements for code, refactoring code on application
-Type: Regression|D93F0B|Suggestion for regression for an older version due to instability
-Type: Security|B60205|Layer of security level, bug or zero day appears that compromise application functionality
-LABELS
+          cat <<EOF > labels.txt
+          Priority: Critical|B60205|Critical, needs to check quickly
+          Priority: High|D93F0B|Priority level high
+          Priority: Medium|FBCA04|Priority level medium
+          Priority: Low|0E8A16|Priority level low
+          Status: Complete|0E8A16|Task, feature, implemented without problems
+          Status: Debugging|5319E7|Code debugging and searching errors on it
+          Status: Feedback Needed|0094BC|Feedback priority in some task, features, code…
+          Status: Generate Conflicts|A30200|Feature that generates conflicts on code deployment
+          Status: In Observation|00CCCC|Code implemented and feature is under observation in case generates conflicts
+          Status: In Progress|D93F0B|Still in progress or developing or checking functionality
+          Status: On Discussion|0052CC|Feature or new function to implement, that need a little discussion over it
+          Status: On Hold|000000|Task, feature is hold due to time or no people working there right now
+          Status: Ready for Merge|0E8A16|Feature ready for merge and see functionality and how works
+          Status: Ready for Test|0E8A16|Feature confirmed and already finished, need some test before deploy on main branch
+          Status: Review Needed|FBCA04|Feature, task or code needs review for check the functionality
+          Status: Stopped|000000|Currently functionality stopped
+          Status: Under Consideration|5319E7|Developers thinking about the implementation of the feature, suggestion…
+          Type: Bug|D93F0B|Bug exists on code development, needs to check, review for fast push
+          Type: Documentation|0075CA|For code documentation issues or recomendation
+          Type: Enhancement|0052CC|Enhancement for application that need to be review
+          Type: Feature|0E8A16|New feature to implement, need review
+          Type: Help Needed|5319E7|Attention is needed
+          Type: Idea|FBCA04|Idea, or suggestion for change some functionality on application
+          Type: Question|D93F0B|Question, for explain what exactly want to implement
+          Type: Refactoring|0052CC|Improvements for code, refactoring code on application
+          Type: Regression|D93F0B|Suggestion for regression for an older version due to instability
+          Type: Security|B60205|Layer of security level, bug or zero day appears that compromise application functionality
+          EOF
 
-          # Recorremos cada línea y creamos o actualizamos la etiqueta
           while IFS='|' read -r name color desc; do
             if ! gh label view "$name" &>/dev/null; then
               gh label create "$name" --color "$color" --description "$desc"
             else
               gh label edit   "$name" --color "$color" --description "$desc"
             fi
-          done <<< "$labels"
+          done < labels.txt
