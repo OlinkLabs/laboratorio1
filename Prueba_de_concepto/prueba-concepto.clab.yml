@@ -1,0 +1,55 @@
+name: Concept-LAB
+topology:
+  kinds:
+    nokia_srlinux:
+      type: ixrd3
+      image: ghcr.io/nokia/srlinux
+
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      startup-config: configs/srl1.cfg
+      labels:
+        graph-posX: "649"
+        graph-posY: "225"
+        graph-groupLabelPos: bottom-center
+    srl2:
+      kind: nokia_srlinux
+      startup-config: configs/srl2.cfg
+      labels:
+        graph-posX: "735"
+        graph-posY: "225"
+        graph-groupLabelPos: bottom-center
+    srl3:
+      kind: nokia_srlinux
+      startup-config: configs/srl3.cfg
+      labels:
+        graph-posX: "649"
+        graph-posY: "305"
+        graph-groupLabelPos: bottom-center
+    srl4:
+      kind: nokia_srlinux
+      startup-config: configs/srl4.cfg
+      labels:
+        graph-posX: "735"
+        graph-posY: "305"
+        graph-groupLabelPos: bottom-center
+    srl5:
+      kind: nokia_srlinux
+      startup-config: configs/srl5.cfg
+      labels:
+        graph-posX: "783"
+        graph-posY: "359"
+        graph-groupLabelPos: bottom-center
+
+  links:
+    # srl1 conectado a srl2
+    - endpoints: [ "srl1:e1-1", "srl2:e1-1" ]
+    # srl1 conectado a srl3
+    - endpoints: [ "srl1:e1-2", "srl3:e1-1" ]
+    # srl2 conectado a srl4
+    - endpoints: [ "srl2:e1-2", "srl4:e1-1" ]
+    # srl3 conectado a srl4
+    - endpoints: [ "srl3:e1-2", "srl4:e1-2" ]
+    # srl4 conectado a srl5
+    - endpoints: [ "srl4:e1-3", "srl5:e1-1" ]
