@@ -1,0 +1,85 @@
+name: Static-Routes-ECMP
+topology:
+  kinds:
+    nokia_srlinux:
+      type: ixrd3
+      image: ghcr.io/nokia/srlinux
+    linux:
+      kind: linux
+      image: alpine:latest
+
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      startup-config: configs/srl1.cfg
+      labels:
+        graph-posX: "725"
+        graph-posY: "261"
+        graph-groupLabelPos: bottom-center
+    srl2:
+      kind: nokia_srlinux
+      startup-config: configs/srl2.cfg
+      labels:
+        graph-posX: "654"
+        graph-posY: "262"
+        graph-groupLabelPos: bottom-center
+    srl3:
+      kind: nokia_srlinux
+      startup-config: configs/srl3.cfg
+      labels:
+        graph-posX: "725"
+        graph-posY: "335"
+        graph-groupLabelPos: bottom-center
+    srl4:
+      kind: nokia_srlinux
+      startup-config: configs/srl4.cfg
+      labels:
+        graph-posX: "655"
+        graph-posY: "335"
+        graph-groupLabelPos: bottom-center
+    srl5:
+      kind: nokia_srlinux
+      startup-config: configs/srl5.cfg
+      labels:
+        graph-posX: "605"
+        graph-posY: "385"
+        graph-groupLabelPos: bottom-center
+
+    host1:
+      kind: linux
+      network-mode: none
+      exec:
+        - ip link set eth1 up
+        - ip addr add 10.0.110.0/31 dev eth1
+        - ip route add default via 10.0.110.1 dev eth1
+      labels:
+        graph-posX: "765"
+        graph-posY: "205"
+        graph-groupLabelPos: bottom-center
+    host2:
+      kind: linux
+      network-mode: none
+      exec:
+        - ip link set eth1 up
+        - ip addr add 10.0.120.0/31 dev eth1
+        - ip route add default via 10.0.120.1 dev eth1
+      labels:
+        graph-posX: "560"
+        graph-posY: "439"
+        graph-groupLabelPos: bottom-center
+
+  links:
+    # srl1 conectado a srl2
+    - endpoints: [ "srl1:e1-1", "srl2:e1-1" ]
+    # srl1 conectado a srl3
+    - endpoints: [ "srl1:e1-2", "srl3:e1-1" ]
+    # srl2 conectado a srl4
+    - endpoints: [ "srl2:e1-2", "srl4:e1-1" ]
+    # srl3 conectado a srl4
+    - endpoints: [ "srl3:e1-2", "srl4:e1-2" ]
+    # srl4 conectado a srl5
+    - endpoints: [ "srl4:e1-3", "srl5:e1-1" ]
+    # host1 conectado a srl1
+    - endpoints: [ "host1:eth1", "srl1:e1-3" ]
+    # host2 conectado a srl5
+    - endpoints: [ "host2:eth1", "srl5:e1-2" ]
